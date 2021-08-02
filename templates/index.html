@@ -1,0 +1,12 @@
+{{ template "header.html" .}}
+
+
+<form method="POST" enctype="application/json" action="/json">
+  <textarea name="json" rows="8" cols="100" placeholder="Paste JSON Here">
+  </textarea>
+  <input type="submit" value="Submit">
+ </form>
+
+ {{.payload }}
+
+{{ template "footer.html" .}}
