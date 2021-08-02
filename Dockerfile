@@ -1,21 +1,24 @@
+#Using Multistage build to create smallest container possible
 FROM golang:latest AS builder
 
-#docker run gin-vetex --env-file .env -p 127.0.0.1:8080:8080/tcp
-#Create dir in image to use
-WORKDIR /app
-
+#docker run --env-file .env -p 8080:8080/tcp --name gin gin-vetex 
+#Container IP: docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" gin
+#docker build --tag gin-vetex -q .
+ 
 #Copy all files and folders not enumerated in .dockerignore
-COPY . ./
+COPY . /app
+WORKDIR /app
 
 #Install dependencies
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /main .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -a -o /main .
 
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
+#scratch is an empty docker image for use with languages capable of producing statically linked binaries
+FROM scratch
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /main ./
 ENTRYPOINT ["./main"]
 EXPOSE 8080
-
-#scratch is a docker image for Go
-#FROM scratch
-#COPY --from=builder /main ./
-#ENTRYPOINT ["./main"]
-#EXPOSE 8080

@@ -34,7 +34,7 @@ func ShowJSONPage(c *gin.Context) {
 		panic(err)
 	}
 
-	if !PrettyPrint(jsonData) {
+	if !ValidateJson(jsonData) {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid JSON")
 	}
 
@@ -47,7 +47,7 @@ func ShowJSONPage(c *gin.Context) {
 	c.JSON(http.StatusOK, f)
 }
 
-func PrettyPrint(input []byte) bool {
+func ValidateJson(input []byte) bool {
 	event := models.Event{
 		Name:    "Log",
 		Type:    "Info",

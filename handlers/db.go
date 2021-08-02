@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -23,18 +22,17 @@ const (
 
 func getConnection() (*mongo.Client, context.Context, context.CancelFunc) {
 
-	err := godotenv.Load()
+	//err := godotenv.Load()
 
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	username := os.Getenv("MONGODB_USERNAME")
 	password := os.Getenv("MONGODB_PASSWORD")
 	clusterEndpoint := os.Getenv("MONGODB_ENDPOINT")
 
 	connectionURI := fmt.Sprintf(connectionStringTemplate, username, password, clusterEndpoint)
-	fmt.Println(connectionURI)
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionURI))
 	if err != nil {
 		log.Printf("Failed to create client: %v", err)

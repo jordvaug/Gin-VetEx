@@ -15,11 +15,9 @@ func main() {
 
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
-	router.LoadHTMLGlob("templates/*")
 
 	routes.InitializeRoutes(router)
 
 	// Start serving the application
-	router.Run("localhost:8080")
-
+	router.Run()
 }
